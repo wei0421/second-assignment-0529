@@ -2,19 +2,19 @@ let points = [[0,7], [1,5], [2, 5],[2,3],[3,2],[3,1],[4,0],[5,1],[5,2],[6,3],[6,
 var stroke_colors = "2d00f7-6a00f4-8900f2-a100f2-b100e8-bc00dd-d100b6-e500a4-f20089".split("-").map(a=>"#"+a)
 var fill_colors = "ffbf8cc-fde4cf-ffcfd2-f1c0e8-cfbaf0".split("-").map(a=>"#"+a)
 
-class Obj{  //一隻某某物件的設定
+class Obj{  //一隻鹿的設定
   constructor(args){  //預設值，基本資料(顏色位置大小速度)
   this.p = args.p || createVector(random(width),random(height))
-  this.v = createVector(random(-1,1),random(-1,1))
-  this.size = random(5,10) 
-  this.color = random(fill_colors)
-  this.stroke = random(stroke_colors)
+  this.v = createVector(random(-1,1),random(-1,1))//產生一個x座標值為random(-1,1)，y座標值為random(-1,1)
+  this.size = random(5,10) //放大倍率
+  this.color = random(fill_colors) //充滿顏色
+  this.stroke = random(stroke_colors) //線條顏色
   }
-  draw() //把物件畫出來的函數
+  draw() //把鹿畫出來的函數
   {
-  push()
-  translate(this.p.x,this.p.y)
-  scale((this.v.x<0?1:-1),-1)
+  push() //重新設定新的原點與顏色設定
+  translate(this.p.x,this.p.y) //原點設定在==>物件所在位置
+  scale((this.v.x<0?1:-1),-1) //放大縮小的指令
   fill(this.color)
   stroke(this.stroke)
   strokeWeight(3)
@@ -22,7 +22,7 @@ class Obj{  //一隻某某物件的設定
   for(var i =0;i<points.length;i=i+1){
   curveVertex(points[i][0]*this.size,points[i][1]*this.size)
   }
-     endShape()
+     endShape(CLOSE)
   pop()
   }
   update(){
@@ -44,12 +44,12 @@ class Obj{  //一隻某某物件的設定
     this.v.y = -this.v.y
   }
   }
-  isBallInRanger(x,y){
-    let d =dist(x,y,this.p.x,this.p.y)
+  isBallInRanger(x,y){ //判斷有沒有被滑鼠按到
+    let d =dist(x,y,this.p.x,this.p.y) //計算滑鼠按下的點與此物件的距離
     if(d<this.size*8){
-      return true
+      return true //代表距離有在範圍內
     }else{
-      return false
+      return false //代表距離沒有在範圍內
     }
   }
   }
@@ -83,7 +83,7 @@ var bullet
 var bullets = []
 var score = 0
 
-function setup(){ //設定某某物件倉庫內的資料
+function setup(){ //設定物件倉庫內的資料
 createCanvas(windowWidth,windowHeight)
 
 for(j=0;j<20;j=j+1) //產生幾個物件
@@ -95,7 +95,7 @@ balls.push(ball)
 }
 
 function draw(){
-  background(220);
+  background(85,107,47);
 
   for(let ball of balls){
   ball.draw()
@@ -110,37 +110,47 @@ function draw(){
     }
   }
   }
+	
+	
 
-  for(let ballet of bullets){
-    ballet.draw()
-    ballet.update()
+  for(let bullet of bullets){
+    bullet.draw()
+    bullet.update()
   }
 
     textSize(50)
-    text(score,50,50)
-
-    push()
-    let dx = mouseX-width/2
-    let dy = mouseY-height/2
-    let angle = atan2(dy,dx)
-
+    text(score,100,50)
+	  text("得分",0,50)
+	
+push()
+    let dx = mouseX-width/2 //滑鼠座標到中心點做錶的x軸距離
+    let dy = mouseY-height/2 //滑鼠座標到中心點做錶的y軸距離
+    let angle = atan2(dy,dx) //利用tan算出角度
 
     translate(width/2,height/2)
-    rotate(angle)
+    rotate(angle) //讓砲台翻轉一個angle角度
     noStroke()
     fill("#FF5809")
     ellipse(0,0,60)
     fill("#84C1FF")
     triangle(50,0,-25,-25,-25,25)
     
-    pop()
- 
+pop()
+
+	if (score>=20){
+		fill(144,238,144)
+		rect(0,0,width,height)
+		fill(255)
+		textSize(100)
+		textAlign(CENTER)
+		text("遊戲結束!",width/2,height/2)
+	}
+	
 }
-
 function mousePressed(){
-
-
-
+    
 bullet = new Bullet({})
 bullets.push(bullet)
+	
+		
 }
